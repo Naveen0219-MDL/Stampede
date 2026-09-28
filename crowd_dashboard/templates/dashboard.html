@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Hybrid Crowd Risk Dashboard</title>
+
+<style>
+body {
+    margin:0;
+    font-family:Arial;
+    background:#0f172a;
+    color:white;
+}
+
+.header {
+    padding:20px;
+    background:#111827;
+    font-size:22px;
+    font-weight:bold;
+}
+
+.container {
+    display:flex;
+    padding:20px;
+    gap:20px;
+}
+
+.video-section {
+    flex:3;
+    background:#111827;
+    padding:15px;
+    border-radius:12px;
+}
+
+.video-section img {
+    width:100%;
+    border-radius:12px;
+}
+
+.panel {
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    gap:15px;
+}
+
+.card {
+    background:#1f2937;
+    padding:20px;
+    border-radius:12px;
+    box-shadow:0 0 15px rgba(0,0,0,0.3);
+}
+
+.metric {
+    font-size:28px;
+    font-weight:bold;
+}
+
+.safe { color:#22c55e; }
+.risk { color:#ef4444; }
+
+.logout {
+    position:absolute;
+    right:20px;
+    top:20px;
+    color:#3b82f6;
+}
+</style>
+
+</head>
+<body>
+
+<div class="header">
+Hybrid Crowd Risk Monitoring System
+<a href="/logout" class="logout">Logout</a>
+</div>
+
+<div class="container">
+
+<div class="video-section">
+<img src="{{ stream_url }}">
+</div>
+
+<div class="panel">
+
+<div class="card">
+<h3>Status</h3>
+<div id="status" class="metric">SAFE</div>
+</div>
+
+<div class="card">
+<h3>Max Density</h3>
+<div id="density" class="metric">0</div>
+</div>
+
+<div class="card">
+<h3>Max Motion</h3>
+<div id="motion" class="metric">0</div>
+</div>
+
+<div class="card">
+<h3>System Health</h3>
+<div>Camera: Online</div>
+<div>ESP32: Connected</div>
+<div>Server: Running</div>
+</div>
+
+</div>
+
+</div>
+
+<script>
+function updateMetrics(){
+    fetch("{{ metrics_url }}")
+    .then(res=>res.json())
+    .then(data=>{
+
+        document.getElementById("density").innerText = data.max_density;
+        document.getElementById("motion").innerText = data.max_motion;
+
+        if(data.evacuation_required){
+            document.getElementById("status").innerText = "HIGH RISK";
+            document.getElementById("status").className = "metric risk";
+        } else {
+            document.getElementById("status").innerText = "SAFE";
+            document.getElementById("status").className = "metric safe";
+        }
+
+    });
+}
+
+setInterval(updateMetrics,1000);
+updateMetrics();
+</script>
+
+</body>
+</html>

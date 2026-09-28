@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+.env
+*.log
+
+# Large datasets and generated media
+frames/
+*.pt
+*.onnx
+*.mp4
+*.avi
+*.mov
+
+# Local/demo artifacts
+PyWhatKit_DB.txt
+Screenshot *.png
+sample_*.jpeg
+pdf&rendition=*.pdf
